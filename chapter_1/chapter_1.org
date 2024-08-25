@@ -135,6 +135,7 @@ recurse as it evaluates `(p)`.
 parameter subexpression before running the procedure. This creates an
 infinite recursion because it calls itself in the alternative
 expression.
+
 ** 1.8
 
 Newton's method for cube roots is based on the
@@ -150,13 +151,23 @@ the square-root procedure.  (In section *Note 1-3-4:: we will see
 how to implement Newton's method in general as an abstraction of
 these square-root and cube-root procedures.)
 
-#+begin_src racket :session
+#+begin_src racket
+;;; Compute the absolute value of x.
+;;; This is sufficiently abstracted to be in its own procudure.
 (define (abs x)
   (if (>= x 0)
       x
       (- x)))
 
-(define (cube-root guess x)
+#|
+Compute the cube-root of x using Newton's method.
+
+Note that there are multiple internal procedures that are not
+abstracted enough to be taken out of the cube-root scope. These
+procedures are tightly coupled to the cube-root procedure. As
+mentioned in the book, we will improve the abstraction later.
+|#
+(define (cube-root x)
   (define tolerance 0.001)
   (define (good-enough? guess x)
     (< (abs (- (expt guess 3)
@@ -166,18 +177,16 @@ these square-root and cube-root procedures.)
     (/ (+ (/ x (expt guess 2))
           (* 2 guess))
        3))
-  (if (good-enough? guess x)
-        guess
-        (cube-root (improve guess x) x)))
+  (define (cube-root-iter guess x)
+    (if (good-enough? guess x)
+      guess
+      (cube-root-iter (improve guess x) x)))
+  (cube-root-iter 1.1 x))
 
-(cube-root 3.5 27)
+(cube-root 125)
 #+end_src
 
 #+RESULTS:
-: 3.0000007467212595
-
-For this one, the algorithm is highly sensitive to the initial guess
-being nearly correct. For 27 it works for guesses between 2 and 4
-exclusively and otherwise it blows up.
+: 5.0000004639240965
 
 
