@@ -1,0 +1,6 @@
+# emacs temporary files
+*~
+\#*\#
+
+# latex preview images for org-mode
+*/ltximg/*
