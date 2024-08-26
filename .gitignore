@@ -4,3 +4,6 @@
 
 # latex preview images for org-mode
 */ltximg/*
+
+# mac
+*.DS_Store
