@@ -326,3 +326,45 @@ We found this by finding ~(A 2 4)~.
 \[
 h = 2^{n^2}
 \]
+** 1.11
+
+A function $f$ is defined by the rule that
+
+\[
+f(n) = \begin{cases} 
+         n & \text{if} \ n < 3, \\
+         f(n-1) + 2f(n-2) + 3f(n-3) & \text{if} \ n \geq 3
+       \end{cases}
+\]
+
+Write a procedure that computes $f$ by means of a recursive
+process. Write a procedure that computes $f$ by means of an iterative
+process.
+
+#+begin_src racket :results output
+;;; recursive implementation of f
+(define (f-recursive n)
+  (if (< n 3)
+      n
+      (+ (f-recursive (- n 1))
+         (* 2 (f-recursive (- n 2)))
+         (* 3 (f-recursive (- n 3))))))
+
+
+;;; iterative implementation of f
+(define (f-iter n)
+  (define (f-iter-h f_n_1 f_n_2 f_n_3 count)
+    (if (= count 0)
+        f_n_3
+        (f-iter-h (+ f_n_1 (* 2 f_n_2) (* 3 f_n_3)) f_n_1 f_n_2 (- count 1))))
+  (f-iter-h 2 1 0 n))
+
+(define test-list '(0 1 2 3 4 5 6 7 8 9 10))
+(display (map f-recursive test-list))
+(display "\n")
+(display (map f-iter test-list))
+#+end_src
+
+#+RESULTS:
+: (0 1 2 4 11 25 59 142 335 796 1892)
+: (0 1 2 4 11 25 59 142 335 796 1892)
