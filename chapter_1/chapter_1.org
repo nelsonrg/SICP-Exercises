@@ -420,3 +420,72 @@ of a recursive process.
 
 #+end_example
 
+** TODO 1.13
+
+Prove that $\text{Fib}(n)$ is the closest integer to $\varphi^n /
+\sqrt{5}$, where $\varphi = (1 + \sqrt{5})/2$.
+
+** 1.15
+*** 1.15.a
+
+How many times is the procedure /p/ applied when ~(sine 12.15)~ is
+evaluated?
+
+#+begin_src racket :results output
+(define (cube x) (* x x x))
+(define (p x) (- (* 3 x) (* 4 (cube x))))
+(define counter 1)
+(define (sine angle)
+  (if (not (> (abs angle) 0.1))
+      angle
+      (begin
+        (set! counter (+ counter 1))
+        (p (sine (/ angle 3.0))))))
+
+(sine 12.15)
+(display counter)
+#+end_src
+
+#+RESULTS:
+: -0.39980345741334
+: 6
+
+*** 1.15.b
+
+#+begin_src racket
+(define (cube x) (* x x x))
+(define (p x) (- (* 3 x) (* 4 (cube x))))
+(define (sine angle step)
+  (display step) (display ". ") (display angle) (newline)
+  (if (not (> (abs angle) 0.1))
+      angle
+      (p (sine (/ angle 3.0) (+ step 1)))))
+
+(sine 12.15 1)
+#+end_src
+
+#+RESULTS:
+: 1. 12.15
+: 2. 4.05
+: 3. 1.3499999999999999
+: 4. 0.44999999999999996
+: 5. 0.15
+: 6. 0.049999999999999996
+: -0.39980345741334
+
+In each iteration, the angle is divided by three. So the number of
+iterations $n$ will be defined by
+
+\[
+\begin{align*}
+  \frac{n}{3^m} &= 0.1 \\
+  10n &= 3^m \\
+  m &= \frac{\log{10} + \log{n}}{\log{3}}
+\end{align*}
+\]
+
+So the time complexity is $\Theta(\log{n})$. 
+
+
+
+
