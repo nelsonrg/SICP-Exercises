@@ -566,5 +566,57 @@ previous approach.
 : (0 1 1000000000 512000000000)
 : (0 1 1000000000 512000000000)
 
+** 1.17
 
+Use ~double~ and ~halve~ to design a multiplication procedure that
+uses a logarithmic number of steps.
 
+#+begin_src racket :results output
+(define (double x) (* 2 x))
+(define (halve x) (/ x 2))
+
+(define (mult-fast a b step)
+  (display "Step ") (display step) (newline)
+  (cond ((= b 0) 0)
+        ((even? b) (mult-fast (double a) (halve b) (+ step 1)))
+        (else (+ a (mult-fast a (- b 1) (+ step 1))))))
+
+(define (mult-slow a b step)
+  (display "Step ") (display step) (newline)
+  (if (= b 0) 0
+      (+ a (mult-slow a (- b 1) (+ step 1)))))
+
+(display "Log-n") (newline)
+(display (mult-fast 2 10 0))
+(newline)
+
+(display "Linear-n") (newline)
+(display (mult-slow 2 10 0))
+#+end_src
+
+#+RESULTS:
+#+begin_example
+Log-n
+Step 0
+Step 1
+Step 2
+Step 3
+Step 4
+Step 5
+20
+Linear-n
+Step 0
+Step 1
+Step 2
+Step 3
+Step 4
+Step 5
+Step 6
+Step 7
+Step 8
+Step 9
+Step 10
+20
+#+end_example
+
+I print out the steps to demonstrate the improvement in time-complexity.
