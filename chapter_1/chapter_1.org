@@ -672,3 +672,37 @@ Step 5
 #+end_example
 
 This mostly follows from the previous exercises.
+
+** 1.19
+
+\[
+\begin{align*}
+  T_{p, q}(a, b) &= (bq + aq + ap, bp + aq) \\
+  T_{p, q}(T_{p, q}(a, b)) &= ((bp+aq)q + (bq+aq+ap)q + (bq+aq+ap)p, (bp+aq)p + (bq+aq+ap)q) \\
+  &= (2aq^2+bq^2+2apq+2bpq+ap^2, bp^2+bq^2+aq^2+2apq) \\
+  &= (b(2pq+q^2) + a(2pq+q^2) + a(p^2+q^2), b(p^2+q^2)+a(2pq+q^2))
+\end{align*}
+\]
+
+So $q' = 2pq + q^2$ and $p' = p^2 + q^2$.
+
+Now implement this in the fast Fibonacci algorithm.
+
+#+begin_src racket
+(define (fib n)
+  (define (fib-iter a b p q cnt)
+    (cond ((= cnt 0) b)
+          ((even? cnt) (fib-iter a b
+                                 (+ (* p p) (* q q))
+                                 (+ (* 2 p q) (* q q))
+                                 (/ cnt 2)))
+          (else (fib-iter (+ (* b q) (* a q) (* a p))
+                          (+ (* b p) (* a q))
+                          p q (- cnt 1)))))
+  (fib-iter 1 0 0 1 n))
+
+(map fib (list 0 1 2 10 100))
+#+end_src
+
+#+RESULTS:
+: (0 1 1 55 354224848179261915075)
