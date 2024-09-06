@@ -706,3 +706,54 @@ Now implement this in the fast Fibonacci algorithm.
 
 #+RESULTS:
 : (0 1 1 55 354224848179261915075)
+
+** 1.20
+
+Normal-order evaluation: 18 evaluations of ~remainder~.
+
+#+begin_src racket :noeval
+(gcd 206 40)
+(gcd 40 (remainder 206 40))
+(if (= (remainder 206 40) 0)  ; eval 1 x remainder, r = 6
+    40
+    (gcd (remainder 206 40)
+         (remainder 40 (remainder 206 40))))
+(if (= (remainder 40 (remainder 206 40)) 0)  ; eval 2 x remainder, r = 4
+    (remainder 206 40)  ; 6
+    (gcd (remainder 40 (remainder 206 40))
+         (remainder (remainder 206 40) (remainder 40 (remainder 206 40)))))
+(if (= (remainder (remainder 206 40) (remainder 40 (remainder 206 40))) 0)  ; eval 4 x remainder, r = 2
+    (remainder 40 (remainder 206 40))  ; 4
+    (gcd (remainder (remainder 206 40) (remainder 40 (remainder 206 40)))
+         (remainder (remainder 40 (remainder 206 40))
+                    (remainder (remainder 206 40) (remainder 40 (remainder 206 40))))))
+(if (= (remainder (remainder 40 (remainder 206 40))
+                  (remainder (remainder 206 40) (remainder 40 (remainder 206 40))))
+        0)  ; eval 7 x remainder, r = 0
+    (remainder (remainder 206 40) (remainder 40 (remainder 206 40)))  ; eval 4 x remainder
+    (gcd (remainder (remainder 40 (remainder 206 40))
+                    (remainder (remainder 206 40) (remainder 40 (remainder 206 40))))
+         (remainder (remainder (remainder 206 40) (remainder 40 (remainder 206 40)))
+                    (remainder (remainder 40 (remainder 206 40))
+                    (remainder (remainder 206 40) (remainder 40 (remainder 206 40)))))))
+(2)
+;;; 18 Evaluations of 'remainder' total
+#+end_src
+
+Applicative-order evaluation: 4 evaluations of ~remainder~.
+
+#+begin_src racket :noeval
+(gcd 206 40)
+(gcd 40 (remainder 206 40))  ; eval 1 x remainder
+(gcd 40 6)
+(gcd 6 (remainder 40 6))  ; eval 1 x remainder
+(gcd 6 4)
+(gcd 4 (remainder 6 4))  ; eval 1 x remainder
+(gcd 4 2)
+(gcd 2 (remainder 4 2))  ; eval 1 x remainder
+(gcd 2 0)
+(2)
+;;; 4 Evaluations of 'remainder' total
+#+end_src
+
+
