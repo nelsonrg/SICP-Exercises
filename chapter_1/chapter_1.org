@@ -1041,8 +1041,8 @@ expected \(\sqrt(10)\) pattern.
 | 1M   |                  52 |                  31 |
 |------+---------------------+---------------------|
 
-The new procedure does improve computation times (it takes
-approximately half the time), but it is only noticable for large n.
-
-
+The new procedure does improve computation times), but it is only
+noticable for large n. The improvement is only about a 170% faster
+which is not the 200% we expected. This probably comes from the extra
+logic in the ~next~ procedure for the case-analysis.
 
