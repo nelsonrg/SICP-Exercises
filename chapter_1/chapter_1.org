@@ -1196,3 +1196,10 @@ increases, but I expected to see a linear increase between the tests
 because they grow exponentially (by orders of magnitude). We would
 expect that testing 1,000,000 would take three times longer than
 testing 1,000. I am not sure where the discrepancy is coming from.
+
+** 1.25
+
+The proposed implementation of ~expmod~ would return much larger
+numbers from fast-expt than the algorithm we used to get the
+remainder. This would impact memory use and potentially the run-time
+as well.
