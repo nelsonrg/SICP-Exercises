@@ -1203,3 +1203,15 @@ The proposed implementation of ~expmod~ would return much larger
 numbers from fast-expt than the algorithm we used to get the
 remainder. This would impact memory use and potentially the run-time
 as well.
+
+** 1.26
+
+The interpreter is running in applicative order, so the parameters
+need to be evaluated before applying the procedure. In this case, the
+same parameter ~(expmod base (/ exp 2) m)~ needs to be evaluated twice
+before multiplying together. This doubles the work from the
+implementation that uses the ~square~ procedure very time it is
+called. Doubling the \( \Theta{( \log{n} )} \) at every ~expmod~ call
+results in \( \Theta{( \log{2^n} )}  = \Theta{( n \log{2} )} = \Theta{(n)} \).
+
+
