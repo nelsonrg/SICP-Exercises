@@ -836,8 +836,8 @@ Applicative-order evaluation: 4 evaluations of ~remainder~.
 10001
 10003
 10005
-10007 *** 2
-10009 *** 2
+10007 *** 0
+10009 *** 0
 10011
 10013
 10015
@@ -851,10 +851,10 @@ Applicative-order evaluation: 4 evaluations of ~remainder~.
 10031
 10033
 10035
-10037 *** 2
+10037 *** 1
 
 100001
-100003 *** 5
+100003 *** 0
 100005
 100007
 100009
@@ -862,7 +862,7 @@ Applicative-order evaluation: 4 evaluations of ~remainder~.
 100013
 100015
 100017
-100019 *** 4
+100019 *** 1
 100021
 100023
 100025
@@ -874,10 +874,10 @@ Applicative-order evaluation: 4 evaluations of ~remainder~.
 100037
 100039
 100041
-100043 *** 4
+100043 *** 0
 
 1000001
-1000003 *** 14
+1000003 *** 3
 1000005
 1000007
 1000009
@@ -892,9 +892,9 @@ Applicative-order evaluation: 4 evaluations of ~remainder~.
 1000027
 1000029
 1000031
-1000033 *** 14
+1000033 *** 2
 1000035
-1000037 *** 14
+1000037 *** 3
 #+end_example
 
 The growth in time went 1, 5, 17, 52. This really closely follows the
@@ -964,7 +964,7 @@ expected \(\sqrt(10)\) pattern.
 1007
 1009 *** 1
 1011
-1013 *** 1
+1013 *** 0
 1015
 1017
 1019 *** 0
@@ -972,8 +972,8 @@ expected \(\sqrt(10)\) pattern.
 10001
 10003
 10005
-10007 *** 1
-10009 *** 1
+10007 *** 0
+10009 *** 0
 10011
 10013
 10015
@@ -987,10 +987,10 @@ expected \(\sqrt(10)\) pattern.
 10031
 10033
 10035
-10037 *** 1
+10037 *** 0
 
 100001
-100003 *** 3
+100003 *** 0
 100005
 100007
 100009
@@ -998,7 +998,7 @@ expected \(\sqrt(10)\) pattern.
 100013
 100015
 100017
-100019 *** 3
+100019 *** 1
 100021
 100023
 100025
@@ -1010,10 +1010,10 @@ expected \(\sqrt(10)\) pattern.
 100037
 100039
 100041
-100043 *** 2
+100043 *** 0
 
 1000001
-1000003 *** 7
+1000003 *** 1
 1000005
 1000007
 1000009
@@ -1028,9 +1028,9 @@ expected \(\sqrt(10)\) pattern.
 1000027
 1000029
 1000031
-1000033 *** 8
+1000033 *** 1
 1000035
-1000037 *** 8
+1000037 *** 1
 #+end_example
 
 | n    | Exercise 1.22 Times | Exercise 1.23 Times |
@@ -1120,18 +1120,18 @@ logic in the ~next~ procedure for the case-analysis.
 1003
 1005
 1007
-1009 *** 48
+1009 *** 17
 1011
-1013 *** 50
+1013 *** 19
 1015
 1017
-1019 *** 52
+1019 *** 19
 
 10001
 10003
 10005
-10007 *** 62
-10009 *** 60
+10007 *** 23
+10009 *** 21
 10011
 10013
 10015
@@ -1145,10 +1145,10 @@ logic in the ~next~ procedure for the case-analysis.
 10031
 10033
 10035
-10037 *** 62
+10037 *** 22
 
 100001
-100003 *** 72
+100003 *** 25
 100005
 100007
 100009
@@ -1156,7 +1156,7 @@ logic in the ~next~ procedure for the case-analysis.
 100013
 100015
 100017
-100019 *** 156
+100019 *** 26
 100021
 100023
 100025
@@ -1168,10 +1168,10 @@ logic in the ~next~ procedure for the case-analysis.
 100037
 100039
 100041
-100043 *** 74
+100043 *** 25
 
 1000001
-1000003 *** 85
+1000003 *** 29
 1000005
 1000007
 1000009
@@ -1186,9 +1186,9 @@ logic in the ~next~ procedure for the case-analysis.
 1000027
 1000029
 1000031
-1000033 *** 83
+1000033 *** 29
 1000035
-1000037 *** 85
+1000037 *** 30
 #+end_example
 
 I actually do not see much of a difference in the compute times as n
@@ -1354,3 +1354,66 @@ Known Primes
 
 This got the exact result correctly (with more precision than the
 previous approach shown in the book).
+
+** 1.30
+
+#+begin_src racket :results output
+(define (sum term a next b)
+  (define (iter a result)
+    (if (> a b)
+        result
+        (iter (next a) (+ result (term a)))))
+  (iter a 0))
+
+(sum
+ (lambda (x) (* x x x))
+ 1
+ (lambda (x) (+ x 1))
+ 10)
+#+end_src
+
+#+RESULTS:
+: 3025
+
+** 1.31
+
+#+begin_src racket :results output
+(define (product-recursive term a next b)
+  (if (> a b)
+      1
+      (* (term a)
+         (product-recursive term (next a) next b))))
+
+(define (product-iter term a next b)
+  (define (iter a result)
+    (if (> a b)
+        result
+        (iter (next a) (* result (term a)))))
+  (iter a 1))
+
+(define (factorial n)
+  (product-recursive
+   (lambda (x) x)
+   1
+   (lambda (x) (+ 1 x))
+   n))
+
+;;; https://en.wikipedia.org/wiki/Wallis_product
+(define (wallis-product n)
+  (define (increment x) (+ 1 x))
+  (define (wallis-product-fn x)
+    (* (/ (* 2 x)
+          (- (* 2 x) 1))
+       (/ (* 2 x)
+          (+ (* 2 x) 1))))
+  (product-recursive wallis-product-fn 1 increment n))
+
+(define (wallis-approximate-pi n)
+  (* 2 (wallis-product n)))
+
+(exact->inexact (wallis-approximate-pi 100))
+#+end_src
+
+#+RESULTS:
+: 3.1337874906281624
+
