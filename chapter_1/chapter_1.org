@@ -1417,3 +1417,111 @@ previous approach shown in the book).
 #+RESULTS:
 : 3.1337874906281624
 
+** 1.32
+
+#+begin_src racket :results output
+(define (accumulate combiner null-value term a next b)
+  (if (> a b)
+      null-value
+      (combiner (term a)
+                (accumulate combiner null-value term (next a) next b))))
+
+(define (sum term a next b)
+  (accumulate + 0 term a next b))
+
+(define (product term a next b)
+  (accumulate * 1 term a next b))
+
+(define (accumulate-iter combiner null-value term a next b)
+  (define (iter a result)
+    (if (> a b)
+        result
+        (iter (next a) (combiner result (term a)))))
+  (iter a null-value))
+
+(define (sum-iter term a next b)
+  (accumulate-iter + 0 term a next b))
+
+(define (product-iter term a next b)
+  (accumulate-iter * 1 term a next b))
+
+(sum
+ (lambda (x) (* x x x))
+ 1
+ (lambda (x) (+ x 1))
+ 10)  ; 3025
+
+(product
+ (lambda (x) (/ (+ x 2) x))
+ 1
+ (lambda (x) (+ x 1))
+ 25)  ; 351
+
+(sum-iter
+ (lambda (x) (* x x x))
+ 1
+ (lambda (x) (+ x 1))
+ 10)  ; 3025
+
+(product-iter
+ (lambda (x) (/ (+ x 2) x))
+ 1
+ (lambda (x) (+ x 1))
+ 25)  ; 351
+#+end_src
+
+#+RESULTS:
+: 3025
+: 351
+: 3025
+: 351
+
+** 1.33
+
+#+begin_src racket :results output
+(define (filtered-accumulate filterp combiner null-value term a next b)
+  (if (> a b)
+      null-value
+      (combiner (if (filterp a)
+                    (term a)
+                    null-value)
+                (filtered-accumulate filterp combiner null-value term (next a) next b))))
+
+
+(define (square x) (* x x))
+
+;;; From exercise 1.21
+(define (smallest-divisor n)
+  (define (find-divisor n test-divisor)
+    (cond ((> (square test-divisor) n) n)
+          ((divides? test-divisor n) test-divisor)
+          (else (find-divisor n (+ test-divisor 1)))))
+  (define (divides? a b) (= (remainder b a) 0))
+  (find-divisor n 2))
+
+;;; From the book
+(define (prime? n)
+  (= n (smallest-divisor n)))
+
+
+(define (inc x) (+ x 1))
+
+(define (identity x) x)
+
+(define (relative-prime? i n)
+  (= (gcd i n) 1))
+
+;;; sum of squares of prime numbers in interval a to b
+(define (sum-prime-squares a b)
+  (filtered-accumulate prime? + 0 square a inc b))
+
+;;; product of all positive integers less than n that are relatively prime to n
+(define (product-relative-prime n)
+  (filtered-accumulate (lambda (x) (relative-prime? x n)) * 1 identity 1 inc (- n 1)))
+
+(product-relative-prime 10)
+#+end_src
+
+#+RESULTS:
+: 189
+
