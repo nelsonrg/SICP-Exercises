@@ -1525,3 +1525,131 @@ previous approach shown in the book).
 #+RESULTS:
 : 189
 
+** 1.34
+
+Here is the procedure working in the two examples.
+
+#+begin_src racket :results output
+(define (f g) (g 2))
+
+(define (square x) (* x x))
+
+(f square)
+
+(f (lambda (z) (* z (+ z 1))))
+#+end_src
+
+#+RESULTS:
+: 4
+: 6
+
+If we asked the interpreter to evaluate `(f f)`, it would fail. Here is how it would evaluate:
+
+#+begin_src racket :noeval
+(f f)
+(f 2)
+(2 2)
+#+end_src
+
+This fails because it tries to use "2" as a procedure on the number 2.
+
+** 1.35
+
+#+begin_src racket :results output
+(define tolerance 0.00001)
+
+(define (fixed-point f first-guess)
+  (define (close-enough? v1 v2)
+    (< (abs (- v1 v2))
+       tolerance))
+  (define (try guess)
+    (let ((next (f guess)))
+      (if (close-enough? guess next)
+          next
+          (try next))))
+  (try first-guess))
+
+(fixed-point (lambda (x) (+ 1 (/ 1 x))) 1.0)
+#+end_src
+
+#+RESULTS:
+: 1.6180327868852458
+
+** 1.36
+
+#+begin_src racket :results output
+(define tolerance 0.00001)
+
+(define (fixed-point f first-guess)
+  (define (close-enough? v1 v2)
+    (< (abs (- v1 v2))
+       tolerance))
+  (define (try guess counter)
+    (display guess) (display ": ") (display counter) (newline)
+    (let ((next (f guess)))
+      (if (close-enough? guess next)
+          next
+          (try next (+ counter 1)))))
+  (try first-guess 0))
+
+(fixed-point (lambda (x) (/ (log 1000) (log x))) 2.0)
+
+(define (average x y) (/ (+ x y) 2))
+
+(fixed-point
+ (lambda (x) (average x
+                      (/ (log 1000)
+                         (log x))))
+ 2.0)
+#+end_src
+
+#+RESULTS:
+#+begin_example
+2.0: 0
+9.965784284662087: 1
+3.004472209841214: 2
+6.279195757507157: 3
+3.759850702401539: 4
+5.215843784925895: 5
+4.182207192401397: 6
+4.8277650983445906: 7
+4.387593384662677: 8
+4.671250085763899: 9
+4.481403616895052: 10
+4.6053657460929: 11
+4.5230849678718865: 12
+4.577114682047341: 13
+4.541382480151454: 14
+4.564903245230833: 15
+4.549372679303342: 16
+4.559606491913287: 17
+4.552853875788271: 18
+4.557305529748263: 19
+4.554369064436181: 20
+4.556305311532999: 21
+4.555028263573554: 22
+4.555870396702851: 23
+4.555315001192079: 24
+4.5556812635433275: 25
+4.555439715736846: 26
+4.555599009998291: 27
+4.555493957531389: 28
+4.555563237292884: 29
+4.555517548417651: 30
+4.555547679306398: 31
+4.555527808516254: 32
+4.555540912917957: 33
+4.555532270803653
+2.0: 0
+5.9828921423310435: 1
+4.922168721308343: 2
+4.628224318195455: 3
+4.568346513136242: 4
+4.5577305909237005: 5
+4.555909809045131: 6
+4.555599411610624: 7
+4.5555465521473675: 8
+4.555537551999825
+#+end_example
+
+The non-damped version took 34 steps while the damped version found the fixed point in only 9 steps.
