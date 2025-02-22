@@ -1653,3 +1653,58 @@ This fails because it tries to use "2" as a procedure on the number 2.
 #+end_example
 
 The non-damped version took 34 steps while the damped version found the fixed point in only 9 steps.
+
+** 1.37
+
+#+begin_src racket :results output
+(define (cont-frac n d k)
+  (define (cont-frac-i i)
+    (if (= i k)
+        (/ (n i) (d i))
+        (/ (n i)
+           (+ (d i) (cont-frac-i (+ i 1))))))
+  (cont-frac-i 1))
+
+(define (approx-inverse-phi k)
+  (let ((approx (cont-frac (lambda (i) 1.0)
+                           (lambda (i) 1.0)
+                           k)))
+    (display k) (display ": ") (display approx) (newline)
+    (if (= 0.6180
+           (/ (floor (* approx 1e4))
+              1e4))
+        approx
+        (approx-inverse-phi (+ k 1)))))
+
+(approx-inverse-phi 1)
+
+(define (cont-frac-iter n d k)
+  (define (cont-frac-i i result)
+    (if (= i 0)
+        result
+        (cont-frac-i (- i 1) (/ (n i) (+ (d i) result)))))
+  (cont-frac-i k 0))
+
+(cont-frac-iter (lambda (i) 1.0)
+                (lambda (i) 1.0)
+                11)
+#+end_src
+
+#+RESULTS:
+#+begin_example
+1: 1.0
+2: 0.5
+3: 0.6666666666666666
+4: 0.6000000000000001
+5: 0.625
+6: 0.6153846153846154
+7: 0.6190476190476191
+8: 0.6176470588235294
+9: 0.6181818181818182
+10: 0.6179775280898876
+11: 0.6180555555555556
+0.6180555555555556
+0.6180555555555556
+#+end_example
+
+It takes 11 iterations to approximate \[ \varphi^{-1} \]. 
