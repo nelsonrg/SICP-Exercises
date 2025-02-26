@@ -1824,3 +1824,21 @@ Most of this work is just copying procedures from the book.
 
 #+RESULTS:
 : 21
+
+** 1.42
+
+#+begin_src racket :results output
+(define (inc x)
+  (+ x 1))
+
+(define (square x)
+  (* x x))
+
+(define (compose f g)
+  (lambda (x) (f (g x))))
+
+((compose square inc) 6)
+#+end_src
+
+#+RESULTS:
+: 49
