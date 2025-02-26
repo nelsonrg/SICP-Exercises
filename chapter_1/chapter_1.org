@@ -1842,3 +1842,23 @@ Most of this work is just copying procedures from the book.
 
 #+RESULTS:
 : 49
+
+** 1.43
+
+#+begin_src racket :results output
+(define (square x)
+  (* x x))
+
+(define (compose f g)
+  (lambda (x) (f (g x))))
+
+(define (repeated f n)
+  (if (= n 1)
+      f
+      (compose f (repeated f (- n 1)))))
+
+((repeated square 2) 5)
+#+end_src
+
+#+RESULTS:
+: 625
