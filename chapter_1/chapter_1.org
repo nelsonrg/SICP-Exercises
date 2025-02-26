@@ -1809,3 +1809,18 @@ Most of this work is just copying procedures from the book.
 
 #+RESULTS:
 : -1.2756822036498454
+
+** 1.41
+
+#+begin_src racket :results output
+(define (double f)
+  (lambda (x) (f (f x))))
+
+(define (inc x)
+  (+ x 1))
+
+(((double (double double)) inc) 5)
+#+end_src
+
+#+RESULTS:
+: 21
