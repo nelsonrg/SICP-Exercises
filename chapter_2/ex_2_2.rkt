@@ -1,47 +1,5 @@
-#+property: header-args:racket :lang sicp
-* Exercises
-** 2.1
+#lang sicp
 
-#+begin_src racket :results output
-(define (get-sign x)
-  (if (>= x 0)
-      1
-      -1))
-
-(define (make-rat n d)
-  (let ((g (gcd n d))
-        (sign (get-sign (* n d))))
-    (cons (/ (* sign (abs n)) g)
-          (/ (abs d) g))))
-
-(define (numer x)
-  (car x))
-
-(define (denom x)
-  (cdr x))
-
-(define (print-rat x)
-  (newline)
-  (display (numer x))
-  (display "/")
-  (display (denom x)))
-
-(print-rat (make-rat 4 6))
-(print-rat (make-rat -4 -6))
-(print-rat (make-rat -4 6))
-(print-rat (make-rat 4 -6))
-#+end_src
-
-#+RESULTS:
-: 
-: 2/3
-: 2/3
-: -2/3
-: -2/3
-
-** 2.2
-
-#+begin_src racket :results output
 (define (make-point x y)
   (cons x y))
 
@@ -94,10 +52,4 @@
 (define segment1 (make-segment origin p1))
 (print-segment segment1)
 (print-point (mid-point segment1))
-#+end_src
 
-#+RESULTS:
-: 
-: (0,0)
-: (1,1)
-: (1/2,1/2)
