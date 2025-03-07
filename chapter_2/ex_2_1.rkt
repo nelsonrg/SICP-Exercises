@@ -1,8 +1,5 @@
-#+property: header-args:racket :lang sicp
-* Exercises
-** 2.1
+#lang sicp
 
-#+begin_src racket :results output
 (define (get-sign x)
   (if (>= x 0)
       1
@@ -25,16 +22,3 @@
   (display (numer x))
   (display "/")
   (display (denom x)))
-
-(print-rat (make-rat 4 6))
-(print-rat (make-rat -4 -6))
-(print-rat (make-rat -4 6))
-(print-rat (make-rat 4 -6))
-#+end_src
-
-#+RESULTS:
-: 
-: 2/3
-: 2/3
-: -2/3
-: -2/3
