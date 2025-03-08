@@ -215,3 +215,30 @@ the input argument. Below I show examples of adding one to zero.
 #+RESULTS:
 : 5.0
 : 10.0
+
+** 2.8
+
+We should just be able to use the /add-interval/ procedure and replace
+the addition function with a subtraction.
+
+#+begin_src racket :results output
+(define (subtract-interval x y)
+  (make-interval (- (lower-bound x) (lower-bound y))
+                 (- (upper-bound x) (upper-bound y))))
+
+(define (make-interval a b)
+  (cons a b))
+
+(define (lower-bound interval)
+  (car interval))
+
+(define (upper-bound interval)
+  (cdr interval))
+
+(define interval1 (make-interval 5.0 10.0))
+(define interval2 (make-interval 0.0 5.0))
+(subtract-interval interval1 interval2)
+#+end_src
+
+#+RESULTS:
+: (5.0 . 5.0)
