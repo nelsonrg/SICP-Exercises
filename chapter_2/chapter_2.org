@@ -242,3 +242,80 @@ the addition function with a subtraction.
 
 #+RESULTS:
 : (5.0 . 5.0)
+
+** 2.9
+
+First let's define notation for the intervals. Let the upper bound of
+an interval be denoted as $b$ and the lower bound as $a$.Then the
+width of an interval $n$ is
+
+$W_n = b_n - a_n$.
+
+For an interval formed by summing the intervals $m$ and $n$, the upper bound is
+
+$b_{m + n} = b_m + b_n$
+
+and the lower bound is
+
+$a_{m + n} = a_m + a_n$.
+
+Therefore the width of the addition of the intervals is given by
+
+\begin{align*}
+  W_{m + n} &= b_{m + n} - a_{m + n} \\
+            &= b_m + b_n - a_m - a_n \\
+            &= (b_m - a_m) + (b_n - a_n) \\
+            &= W_m + W_n
+\end{align*}
+
+so the width of the addition of two intervals is equal to the addition
+of their widths.
+
+#+begin_src racket :results output
+(define (make-interval a b)
+  (cons a b))
+
+(define (lower-bound interval)
+  (car interval))
+
+(define (upper-bound interval)
+  (cdr interval))
+
+(define (add-interval x y)
+  (make-interval (+ (lower-bound x) (lower-bound y))
+                 (+ (upper-bound x) (upper-bound y))))
+
+(define (mul-interval x y)
+  (let ((p1 (* (lower-bound x) (lower-bound y)))
+        (p2 (* (lower-bound x) (upper-bound y)))
+        (p3 (* (upper-bound x) (lower-bound y)))
+        (p4 (* (upper-bound x) (upper-bound y))))
+    (make-interval (min p1 p2 p3 p4)
+                   (max p1 p2 p3 p4))))
+
+(define (width interval)
+  (/ (- (upper-bound interval)
+        (lower-bound interval))
+     2))
+
+(define interval1 (make-interval 5.0 10.0))
+(define interval2 (make-interval 0.0 5.0))
+
+(display "Adding intervals of same width (5.0)")
+(width (add-interval interval1 interval1))
+(width (add-interval interval2 interval2))
+(width (add-interval interval1 interval2))
+
+(display "Multiplying intervals of same width (5.0)")
+(width (mul-interval interval1 interval1))
+(width (mul-interval interval2 interval2))
+(width (mul-interval interval1 interval2))
+#+end_src
+
+#+RESULTS:
+: Adding intervals of same width (5.0)5.0
+: 5.0
+: 5.0
+: Multiplying intervals of same width (5.0)37.5
+: 12.5
+: 25.0
