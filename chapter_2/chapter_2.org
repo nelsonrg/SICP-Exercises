@@ -154,3 +154,43 @@
 #+RESULTS:
 : 2
 : 3
+
+** 2.6
+
+This one took me a little bit to wrap my head around. The key idea is
+that each Church numeral is a function that takes two parameters: $f$
+a function to apply and $x$ a value to apply the function on. The
+order of the numeral is the number of times the function is applied to
+the input argument. Below I show examples of adding one to zero.
+
+#+begin_src racket :results output
+(define zero (lambda (f) (lambda (x) x)))
+
+(define (add-1 n)
+  (lambda (f) (lambda (x) (f ((n f) x)))))
+
+(define one (lambda (f)
+              (lambda (x)
+                (f x))))
+
+(define two (lambda (f)
+              (lambda (x)
+                (f (f x)))))
+
+(define (add a b)
+  (lambda (f)
+    (lambda (x)
+      ((a f)
+       ((b f) x)))))
+
+((zero (lambda (x) (+ x 1))) 0)
+((one (lambda (x) (+ x 1))) 0)
+((two (lambda (x) (+ x 1))) 0)
+(((add one two) (lambda (x) (+ x 1))) 0)
+#+end_src
+
+#+RESULTS:
+: 0
+: 1
+: 2
+: 3
