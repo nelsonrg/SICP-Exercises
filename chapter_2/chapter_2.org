@@ -500,3 +500,61 @@ mul-interval2: (-22 . 24)
 mul-interval: (-24 . 22)
 mul-interval2: (-24 . 22)
 #+end_example
+
+** 2.12
+
+First bring in the previously defined abstractions.
+
+#+begin_src jupyter-racket :results none :session 2-12 :tangle ex_2_12.rkt
+#lang sicp
+
+(define (make-center-width c w)
+  (make-interval (- c w) (+ c w)))
+
+(define (center i)
+  (/ (+ (lower-bound i) (upper-bound i)) 2))
+
+(define (width i)
+  (/ (- (upper-bound i) (lower-bound i)) 2))
+
+(define (make-interval a b)
+  (cons a b))
+
+(define (lower-bound interval)
+  (car interval))
+
+(define (upper-bound interval)
+  (cdr interval))
+#+end_src
+
+Now define ~make-center-percent~.
+
+#+begin_src jupyter-racket :results none :session 2-12 :tangle ex_2_12.rkt
+(define (make-center-percent ctr pct)
+  (let ((width (* ctr pct)))
+    (make-interval (- ctr width) (+ ctr width))))
+#+end_src
+
+Let's check that it works. A center of 10 with a tolerance of 10% should give
+an interval of [13.5, 16.5].
+
+#+begin_src jupyter-racket :results value :display plain :session 2-12 :tangle ex_2_12.rkt
+(make-center-percent 15 0.1)
+#+end_src
+
+#+RESULTS:
+: '(13.5 . 16.5)
+
+Finally add a percent selector for an interval object.
+
+#+begin_src jupyter-racket :results value :display plain :session 2-12 :tangle ex_2_12.rkt
+(define (percent i)
+  (/ (width i) (center i)))
+
+(percent (make-center-percent 15 0.1))
+#+end_src
+
+#+RESULTS:
+: 0.1
+
+
