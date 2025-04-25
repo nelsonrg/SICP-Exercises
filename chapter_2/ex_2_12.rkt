@@ -19,12 +19,12 @@
   (cdr interval))
 
 (define (make-center-percent ctr pct)
-  (let ((width (* ctr pct)))
+  (let ((width (* ctr (/ pct 100.0))))
     (make-interval (- ctr width) (+ ctr width))))
 
-(make-center-percent 15 0.1)
+(make-center-percent 15 10)
 
 (define (percent i)
-  (/ (width i) (center i)))
+  (* 100 (/ (width i) (center i))))
 
-(percent (make-center-percent 15 0.1))
+(percent (make-center-percent 15 10))

@@ -1,4 +1,7 @@
-#+property: header-args:racket :lang sicp
+#+SETUPFILE: ~/org/org-html-themes/org/theme-bigblow.setup
+#+property: header-args :racket :lang sicp
+#+property: header-args :exports both
+#+OPTIONS: num:nil
 * Exercises
 ** 2.1
 
@@ -503,11 +506,16 @@ mul-interval2: (-24 . 22)
 
 ** 2.12
 
+Set the language when tangling, but don't execute. Using
+~jupyter-racket~ uses the ~#lang iracket~ language.
+
+#+begin_src jupyter-racket :results none :tangle ex_2_12.rkt :eval no
+#lang sicp
+#+end_src
+
 First bring in the previously defined abstractions.
 
 #+begin_src jupyter-racket :results none :session 2-12 :tangle ex_2_12.rkt
-#lang sicp
-
 (define (make-center-width c w)
   (make-interval (- c w) (+ c w)))
 
@@ -531,7 +539,7 @@ Now define ~make-center-percent~.
 
 #+begin_src jupyter-racket :results none :session 2-12 :tangle ex_2_12.rkt
 (define (make-center-percent ctr pct)
-  (let ((width (* ctr pct)))
+  (let ((width (* ctr (/ pct 100.0))))
     (make-interval (- ctr width) (+ ctr width))))
 #+end_src
 
@@ -539,7 +547,7 @@ Let's check that it works. A center of 10 with a tolerance of 10% should give
 an interval of [13.5, 16.5].
 
 #+begin_src jupyter-racket :results value :display plain :session 2-12 :tangle ex_2_12.rkt
-(make-center-percent 15 0.1)
+(make-center-percent 15 10)
 #+end_src
 
 #+RESULTS:
@@ -549,12 +557,57 @@ Finally add a percent selector for an interval object.
 
 #+begin_src jupyter-racket :results value :display plain :session 2-12 :tangle ex_2_12.rkt
 (define (percent i)
-  (/ (width i) (center i)))
+  (* 100 (/ (width i) (center i))))
 
-(percent (make-center-percent 15 0.1))
+(percent (make-center-percent 15 10))
 #+end_src
 
 #+RESULTS:
-: 0.1
+: 10.0
 
+** 2.13
 
+Let $c_i$, $l_i$, $w_i$, $p_i$ be the center, lower bound, width, and
+percent tolerance of an interval $i$.
+
+Let $i_3 = i_1 \times i_2$. From our definition of taking the products
+of intervals,
+
+#+NAME: eq:l3
+\begin{align}
+\begin{split}
+  l_3 &= l_1 \times l_2 \\
+      &= (c_1 - w_1)(c_2 - w_2) \\
+      &= c_1 c_2 - c_1 w_2 - c_2 w_1 + w_1 w_2
+\end{split}
+\end{align}
+
+From Equation [[eq:l3]], the width of the new interval can be rewritten as
+
+#+NAME: eq:w3
+\begin{align}
+\begin{split}
+  w_3 &= c_3 - l_3 \\
+      &= c_1 c_2 - l_3 \\
+      &= c_1 w_2 + c_2 w_1 - w_1 w_2
+\end{split}
+\end{align}
+
+From Equation [[eq:w3]] we can rewrite the definition of $p_3$ as
+
+\begin{align*}
+  p_3 &= 100 \frac{w_3}{c_3} \\
+      &= 100 \frac{c_1 w_2 + c_2 w_1 - w_1 w_2}{c_1 c_2} \\
+      &= 100 \frac{w_2}{c_2} + 100 \frac{w_1}{c_1} - 100 \frac{w_1 w_2}{c_1 c_2} \\
+      &= p_1 + p_2 - \frac{p_1 p_2}{100} \\
+      &\approx p_1 + p_2
+\end{align*}
+
+So for small tolerances, the percentage tolerance of the product is
+approximately the sum of the tolerances.
+
+# local variables:
+# org-display-inline-images: t
+# org-confirm-babel-evaluate: nil
+# latexpreview: t
+# end:
