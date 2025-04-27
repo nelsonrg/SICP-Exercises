@@ -606,6 +606,95 @@ From Equation [[eq:w3]] we can rewrite the definition of $p_3$ as
 So for small tolerances, the percentage tolerance of the product is
 approximately the sum of the tolerances.
 
+** 2.14
+
+First set up the code from before to test.
+
+#+begin_src jupyter-racket :session 2-14 :results none
+(define (make-center-width c w)
+  (make-interval (- c w) (+ c w)))
+
+(define (center i)
+  (/ (+ (lower-bound i) (upper-bound i)) 2))
+
+(define (width i)
+  (/ (- (upper-bound i) (lower-bound i)) 2))
+
+(define (make-interval a b)
+  (cons a b))
+
+(define (lower-bound interval)
+  (car interval))
+
+(define (upper-bound interval)
+  (cdr interval))
+
+(define (make-center-percent ctr pct)
+  (let ((width (* ctr (/ pct 100.0))))
+    (make-interval (- ctr width) (+ ctr width))))
+
+(define (percent i)
+  (* 100 (/ (width i) (center i))))
+
+(define (mul-interval x y)
+  (let ((p1 (* (lower-bound x) (lower-bound y)))
+        (p2 (* (lower-bound x) (upper-bound y)))
+        (p3 (* (upper-bound x) (lower-bound y)))
+        (p4 (* (upper-bound x) (upper-bound y))))
+    (make-interval (min p1 p2 p3 p4)
+                   (max p1 p2 p3 p4))))
+
+(define (div-interval x y)
+  (if (or (spans-zero? x)
+          (spans-zero? y))
+      (error "Error, one of the intervals spans zero")
+      (mul-interval x
+                    (make-interval (/ 1.0 (upper-bound y))
+                                   (/ 1.0 (lower-bound y))))))
+
+(define (spans-zero? interval)
+  (and (< (lower-bound interval) 0)
+       (> (upper-bound interval) 0)))
+#+end_src
+
+#+begin_src jupyter-racket :session 2-14 :results output
+(define A (make-center-percent 100 1))
+(define B (make-center-percent 50 1))
+
+(define AdivB (div-interval A B))
+(define BdivA (div-interval B A))
+(define AdivA (div-interval A A))
+(define BdivB (div-interval B B))
+
+(print AdivB) (newline)
+(print BdivA) (newline)
+(print AdivA) (newline)
+(print BdivB) (newline)
+#+end_src
+
+#+RESULTS:
+: '(1.9603960396039604 . 2.0404040404040407)
+: '(0.4900990099009901 . 0.5101010101010102)
+: '(0.9801980198019802 . 1.0202020202020203)
+: '(0.9801980198019802 . 1.0202020202020203)
+
+Let's check the centers of each interval.
+
+#+begin_src jupyter-racket :session 2-14 :results output
+(print (center AdivB)) (newline)
+(print (center BdivA)) (newline)
+(print (center AdivA)) (newline)
+(print (center BdivB)) (newline)
+#+end_src
+
+#+RESULTS:
+: 2.0004000400040005
+: 0.5001000100010001
+: 1.0002000200020003
+: 1.0002000200020003
+
+These are all off at the millionths place.
+
 # local variables:
 # org-display-inline-images: t
 # org-confirm-babel-evaluate: nil
