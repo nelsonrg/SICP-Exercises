@@ -751,7 +751,33 @@ Use the example in the book as a test, ~(last-pair (list 23 72 149 34)) => (34)~
 #+RESULTS:
 : 34
 
+** 2.18
 
+As mentioned many times in the lectures, we can use wishful thinking
+to solve this problem. If we have a list ~(x y z)~, we can break it
+into the first value ~car~ and the rest of the list ~cdr~. To reverse
+the list, we just want to append ~car~ to ~reverse cdr~.
+
+#+begin_src jupyter-racket :session 2-18 :results none
+(define (append list1 list2)
+  (if (null? list1)
+      list2
+      (cons (car list1) (append (cdr list1) list2))))
+
+(define (reverse x)
+  (if (null? x)
+      '()
+      (append (reverse (cdr x)) (list (car x)))))
+#+end_src
+
+Test with the given example: ~(reverse (list 1 4 9 16 25)) => (25 16 9 4 1)~.
+
+#+begin_src jupyter-racket :session 2-18 :results output
+(print (reverse (list 1 4 9 16 25)))
+#+end_src
+
+#+RESULTS:
+: '(25 16 9 4 1)
 
 # local variables:
 # org-display-inline-images: t
