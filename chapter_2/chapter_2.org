@@ -733,6 +733,26 @@ I am not sure if this problem is solvable because I don't have a proof
 that shows that all problems can be rewritten to use each interval
 only once in the expression.
 
+** 2.17
+
+#+begin_src jupyter-racket :session 2-17 :results none
+(define (last-pair x)
+  (if (null? (cdr x))
+      (car x)
+      (last-pair (cdr x))))
+#+end_src
+
+Use the example in the book as a test, ~(last-pair (list 23 72 149 34)) => (34)~.
+
+#+begin_src jupyter-racket :session 2-17 :results value :display plain
+(last-pair (list 23 72 149 34))
+#+end_src
+
+#+RESULTS:
+: 34
+
+
+
 # local variables:
 # org-display-inline-images: t
 # org-confirm-babel-evaluate: nil
