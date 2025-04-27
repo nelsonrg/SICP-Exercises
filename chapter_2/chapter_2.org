@@ -695,6 +695,32 @@ Let's check the centers of each interval.
 
 These are all off at the millionths place.
 
+** 2.15
+
+Looking back at the previous problem, all the centers shifted away
+from zero. This provides a clue about what is going on. There is
+inherent asymmetry in our intervals where the side towards zero is
+bounded by zero while the side away from zero is unbounded to
+infinity. This causes the center of the interval to shift
+slightly. Correcting this would require having uneven intervals on
+either side of the "center" point.
+
+Then there is the issue of repeated intervals that represent the same
+measurement / interval. It is not meaningful to multiply and divide
+these intervals in the same way as two independent intervals because
+their uncertainty is 100% dependent. There is no uncertainty/error to
+propagate when doing ~A / A~, but there is for ~A / B~. Because of
+this, Eva is right and ~par2~ is the better program.
+
+I actually ran into a very similar problem in an undergraduate course
+on applied quantum mechanics where I had experimental data that I was
+using to measure the mass of an electron (I forget exactly which
+experiment we conducted). There were two mathematical formulas that I
+could use to go from the data to the mass, and one involved either
+more parameters with uncertainty or the same parameter multiple times
+(I can't remember). This resulted in two estimates for the electron
+mass with different uncertainty intervals.
+
 # local variables:
 # org-display-inline-images: t
 # org-confirm-babel-evaluate: nil
