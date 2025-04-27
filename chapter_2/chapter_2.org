@@ -721,6 +721,18 @@ more parameters with uncertainty or the same parameter multiple times
 (I can't remember). This resulted in two estimates for the electron
 mass with different uncertainty intervals.
 
+** 2.16
+
+The different algebraic expressions are giving different answers
+because they are not tracking the identity of each interval. The
+current package treats all the intervals like they are different and
+does no simplification to assert that the uncertainties should not
+compound in multiplication and division operations.
+
+I am not sure if this problem is solvable because I don't have a proof
+that shows that all problems can be rewritten to use each interval
+only once in the expression.
+
 # local variables:
 # org-display-inline-images: t
 # org-confirm-babel-evaluate: nil
