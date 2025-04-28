@@ -858,6 +858,32 @@ here.
 : (1 3 5 7)
 : (2 4 6)
 
+** 2.21
+
+#+begin_src jupyter-racket :session 2-21 :results output
+(define (square x) (* x x))
+
+(define (square-list items)
+  (if (null? items)
+      '()
+      (cons (square (car items)) (square-list (cdr items)))))
+
+(display (square-list (list 1 2 3 4)))
+#+end_src
+
+#+RESULTS:
+: (1 4 9 16)
+
+#+begin_src jupyter-racket :session 2-21 :results output
+(define (square-list2 items)
+  (map square items))
+
+(display (square-list (list 1 2 3 4)))
+#+end_src
+
+#+RESULTS:
+: (1 4 9 16)
+
 # local variables:
 # org-display-inline-images: t
 # org-confirm-babel-evaluate: nil
