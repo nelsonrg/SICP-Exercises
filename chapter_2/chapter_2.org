@@ -884,6 +884,55 @@ here.
 #+RESULTS:
 : (1 4 9 16)
 
+** 2.22
+
+First let's look at the behavior.
+
+#+begin_src jupyter-racket :session 2-22 :results output
+(define (square x) (* x x))
+
+(define (square-list items)
+  (define (iter things answer)
+    (if (null? things)
+        answer
+        (iter (cdr things)
+              (cons (square (car things))
+                    answer))))
+  (iter items '()))
+
+(display (square-list (list 1 2 3 4)))
+#+end_src
+
+#+RESULTS:
+: (16 9 4 1)
+
+As described in the book, the results are in reverse order. This
+happens because it keeps cons-ign the current value to the beginning
+of the answer list. Instead, it needs to be appending to the end of
+the list.
+
+The attempted fix doesn't work.
+
+#+begin_src jupyter-racket :session 2-22 :results output
+(define (square-list items)
+  (define (iter things answer)
+    (if (null? things)
+        answer
+        (iter (cdr things)
+              (cons answer
+                    (square (car things))))))
+  (iter items '()))
+
+(display (square-list (list 1 2 3 4)))
+#+end_src
+
+#+RESULTS:
+: ((((() . 1) . 4) . 9) . 16)
+
+This successfully gets the elements in the right order, but they are
+in a nested list. This demonstrates an incorrect implementation of
+append where you cons a list with a value.
+
 # local variables:
 # org-display-inline-images: t
 # org-confirm-babel-evaluate: nil
