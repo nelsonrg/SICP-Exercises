@@ -933,6 +933,30 @@ This successfully gets the elements in the right order, but they are
 in a nested list. This demonstrates an incorrect implementation of
 append where you cons a list with a value.
 
+** 2.23
+
+I first tried to do this with an ~if~, but I couldn't have multiple
+expressions in either of the branches, so I switched to a ~cond~.
+
+#+begin_src jupyter-racket :session 2-23 :results output
+(define (for-each f xs)
+  (cond ((not (null? xs))
+        (f (car xs))
+        (for-each f (cdr xs)))
+        (else '())))
+
+(for-each (lambda (x)
+            (newline)
+            (display x))
+          (list 57 321 88))
+#+end_src
+
+#+RESULTS:
+: 
+: 57
+: 321
+: 88
+
 # local variables:
 # org-display-inline-images: t
 # org-confirm-babel-evaluate: nil
