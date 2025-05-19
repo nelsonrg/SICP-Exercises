@@ -972,6 +972,10 @@ check.
 We can get a nice box-and-pointer diagram using the ~sdraw~ package in
 racket.
 
+#+begin_src sh :results none
+raco pkg install sdraw
+#+end_src
+
 #+begin_src jupyter-racket :session 2-24 :display html
 (require sdraw)
 
