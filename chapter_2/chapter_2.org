@@ -1140,6 +1140,47 @@ We need to ~(car (cdr (x))~ all the way down the nested list.
 #+RESULTS:
 : '((1 2 3) (4 5 6))
 
+** 2.27
+
+All we need to do is add one more case to the case analysis and
+reverse the ~car~ in addition to the ~cdr~. If the input is not a
+pair, return the input because there is nothing to reverse.
+
+#+begin_src jupyter-racket :session 2-27 :results output
+(define (reverse x)
+  (if (null? x)
+      '()
+      (append (reverse (cdr x))
+              (list (car x)))))
+
+(define (deep-reverse x)
+  (cond ((null? x) '())
+        ((not (pair? x)) x)
+        (else (append (deep-reverse (cdr x))
+                      (list (deep-reverse (car x)))))))
+
+(define x (list (list 1 2) (list 3 4)))
+
+(display x)
+(newline) (display (reverse x))
+(newline) (display (deep-reverse x))
+
+(newline)
+(define y '(1 (2 3) (4 (5 6))))
+(newline) (display y)
+(newline) (display (reverse y))
+(newline) (display (deep-reverse y))
+#+end_src
+
+#+RESULTS:
+: ((1 2) (3 4))
+: ((3 4) (1 2))
+: ((4 3) (2 1))
+: 
+: (1 (2 3) (4 (5 6)))
+: ((4 (5 6)) (2 3) 1)
+: (((6 5) 4) (3 2) 1)
+
 
 # local variables:
 # org-display-inline-images: t
