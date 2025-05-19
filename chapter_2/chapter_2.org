@@ -1161,25 +1161,25 @@ pair, return the input because there is nothing to reverse.
 
 (define x (list (list 1 2) (list 3 4)))
 
-(display x)
-(newline) (display (reverse x))
-(newline) (display (deep-reverse x))
+(display "x: ") (display x)
+(newline) (display "reverse: ") (display (reverse x))
+(newline) (display "deep-reverse: ") (display (deep-reverse x))
 
 (newline)
 (define y '(1 (2 3) (4 (5 6))))
-(newline) (display y)
-(newline) (display (reverse y))
-(newline) (display (deep-reverse y))
+(newline) (display "y: ") (display y)
+(newline) (display "reverse: ") (display (reverse y))
+(newline) (display "deep-reverse: ") (display (deep-reverse y))
 #+end_src
 
 #+RESULTS:
-: ((1 2) (3 4))
-: ((3 4) (1 2))
-: ((4 3) (2 1))
+: x: ((1 2) (3 4))
+: reverse: ((3 4) (1 2))
+: deep-reverse: ((4 3) (2 1))
 : 
-: (1 (2 3) (4 (5 6)))
-: ((4 (5 6)) (2 3) 1)
-: (((6 5) 4) (3 2) 1)
+: y: (1 (2 3) (4 (5 6)))
+: reverse: ((4 (5 6)) (2 3) 1)
+: deep-reverse: (((6 5) 4) (3 2) 1)
 
 
 # local variables:
