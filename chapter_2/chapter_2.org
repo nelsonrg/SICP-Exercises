@@ -1181,6 +1181,27 @@ pair, return the input because there is nothing to reverse.
 : reverse: ((4 (5 6)) (2 3) 1)
 : deep-reverse: (((6 5) 4) (3 2) 1)
 
+** 2.28
+
+We can follow a very similar pattern as the previous problem.
+
+We can use the closure property of fringe to our advantage because the
+fringe of a tree is the fringe of its ~car~ appended to the fringe of
+its ~cdr~ (because each subtree is itself a tree).
+
+#+begin_src jupyter-racket :session 2-28 :results output
+(define (fringe t)
+  (cond ((null? t) '())                 ; end of list
+        ((not (pair? t)) (list t))      ; leaf node
+        (else (append (fringe (car t))  ; append the fringes
+                      (fringe (cdr t))))))
+
+(define x (list (list 1 2) (list 3 4)))
+(display (fringe x))
+#+end_src
+
+#+RESULTS:
+: (1 2 3 4)
 
 # local variables:
 # org-display-inline-images: t
