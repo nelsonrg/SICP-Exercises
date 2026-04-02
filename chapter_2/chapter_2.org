@@ -1212,6 +1212,60 @@ its ~cdr~ (because each subtree is itself a tree).
 #+RESULTS:
 : (1 2 3 4 1 2 3 4)
 
+** 2.29
+
+
+#+begin_src jupyter-racket :session 2-29 :results none
+(define (make-mobile left right)
+  (list left right))
+
+(define (make-branch length structure)
+  (list length structure))
+#+end_src
+
+*** 2.29.a
+
+#+begin_src jupyter-racket :session 2-29 :results none
+(define (left-branch mobile)
+  (car mobile))
+
+(define (right-branch mobile)
+  (cadr mobile))
+
+(define (branch-length branch)
+  (car branch))
+
+(define (branch-structure branch)
+  (cadr branch))
+#+end_src
+
+*** 2.29.b
+
+#+begin_src jupyter-racket :session 2-29 :results output
+(define (total-weight m)
+  (if (not (list? m))
+      m
+      (+ (total-weight (branch-structure (left-branch m)))
+         (total-weight (branch-structure (right-branch m))))))
+
+(define x
+  (make-mobile (make-branch 1 (make-mobile
+                               (make-branch 2 1)
+                               (make-branch 2 1)))
+               (make-branch 2 3)))
+
+(define y
+  (make-mobile (make-branch 1 2)
+               (make-branch 2 1)))
+
+(display (total-weight x))
+(newline)
+(display (total-weight y))
+#+end_src
+
+#+RESULTS:
+: 5
+: 3
 
 # local variables:
 # org-display-inline-images: t
