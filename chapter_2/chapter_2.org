@@ -1365,6 +1365,48 @@ We just need to swap ~cadr~ for ~cdr~ in the ~right-branch~ and
 
 Something weird happened on the ~balanced?~ predicate, but I'll look into that later.
 
+*** 2.30
+
+#+begin_src jupyter-racket :session 2-30 :results output
+(define x (list 1 (list 2 (list 3 4) 5) (list 6 7)))
+(display x)
+#+end_src
+
+#+RESULTS:
+: (1 (2 (3 4) 5) (6 7))
+
+Here is ~square-tree~ implemented with ~map~.
+
+#+begin_src jupyter-racket :session 2-30 :results output
+(define (square-tree tree)
+  (map (lambda (sub-tree)
+       (if (pair? sub-tree)
+           (square-tree sub-tree)
+           (expt sub-tree 2)))
+       tree))
+
+(display (square-tree x))
+#+end_src
+
+#+RESULTS:
+: (1 (4 (9 16) 25) (36 49))
+
+And here is a more explicit way of traversing the tree.
+
+#+begin_src jupyter-racket :session 2-30 :results output
+(define (square-tree2 tree)
+  (cond ((null? tree) '())
+        ((not (pair? tree)) (expt tree 2))
+        (else (cons (square-tree2 (car tree))
+                    (square-tree2 (cdr tree))))))
+
+(display (square-tree2 x))
+#+end_src
+
+#+RESULTS:
+: (1 (4 (9 16) 25) (36 49))
+
+
 # local variables:
 # org-display-inline-images: t
 # org-confirm-babel-evaluate: nil
