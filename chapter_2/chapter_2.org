@@ -1267,6 +1267,104 @@ its ~cdr~ (because each subtree is itself a tree).
 : 5
 : 3
 
+*** 2.29.c
+
+#+begin_src jupyter-racket :session 2-29 :results output
+(define (balanced? m)
+  (if (not (list? (car m)))
+  #t
+  (and
+   (= (* (branch-length (left-branch m))
+        (total-weight (branch-structure (left-branch m))))
+     (* (branch-length (right-branch m))
+        (total-weight (branch-structure (right-branch m)))))
+   (and (balanced? (left-branch m))
+        (balanced? (right-branch m))))))
+
+(display (balanced? x))
+(newline)
+(display (balanced? y))
+#+end_src
+
+#+RESULTS:
+: #f
+: #t
+
+*** 2.29.d
+
+#+begin_src jupyter-racket :session 2-29d :results none
+(define (make-mobile left right)
+  (cons left right))
+(define (make-branch length structure)
+  (cons length structure))
+
+(define x
+  (make-mobile (make-branch 1 (make-mobile
+                               (make-branch 2 1)
+                               (make-branch 2 1)))
+               (make-branch 2 3)))
+
+(define y
+  (make-mobile (make-branch 1 2)
+               (make-branch 2 1)))
+#+end_src
+
+We just need to swap ~cadr~ for ~cdr~ in the ~right-branch~ and
+~branch-structure~ selectors and we are off to the races.
+
+#+begin_src jupyter-racket :session 2-29d :results none
+(define (left-branch mobile)
+  (car mobile))
+
+(define (right-branch mobile)
+  (cdr mobile))
+
+(define (branch-length branch)
+  (car branch))
+
+(define (branch-structure branch)
+  (cdr branch))
+#+end_src
+
+#+begin_src jupyter-racket :session 2-29d :results output
+(define (total-weight m)
+  (if (not (pair? m))
+      m
+      (+ (total-weight (branch-structure (left-branch m)))
+         (total-weight (branch-structure (right-branch m))))))
+
+(display (total-weight x))
+(newline)
+(display (total-weight y))
+#+end_src
+
+#+RESULTS:
+: 5
+: 3
+
+#+begin_src jupyter-racket :session 2-29d :results output
+(define (balanced? m)
+  (if (not (list? (car m)))
+  #t
+  (and
+   (= (* (branch-length (left-branch m))
+        (total-weight (branch-structure (left-branch m))))
+     (* (branch-length (right-branch m))
+        (total-weight (branch-structure (right-branch m)))))
+   (and (balanced? (left-branch m))
+        (balanced? (right-branch m))))))
+
+(display (balanced? x))
+(newline)
+(display (balanced? y))
+#+end_src
+
+#+RESULTS:
+: #t
+: #t
+
+Something weird happened on the ~balanced?~ predicate, but I'll look into that later.
+
 # local variables:
 # org-display-inline-images: t
 # org-confirm-babel-evaluate: nil
