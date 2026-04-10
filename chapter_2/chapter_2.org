@@ -1516,6 +1516,49 @@ Here is the implementation of ~append~.
 #+RESULTS:
 : 79
 
+*** 2.35
+
+#+begin_src jupyter-racket :session 2-35 :results output
+(define (count-leaves1 x)
+  (cond ((null? x) 0)
+        ((not (pair? x)) 1)
+        (else (+ (count-leaves1 (car x))
+                 (count-leaves1 (cdr x))))))
+
+(define (accumulate op initial sequence)
+  (if (null? sequence)
+      initial
+      (op (car sequence) (accumulate op initial (cdr sequence)))))
+
+(define (count-leaves t)
+  (accumulate +
+              0
+              (map (lambda (sub-tree)
+                     (if (pair? sub-tree)
+                         (count-leaves sub-tree)
+                         1))
+                   t)))
+
+(define x (cons (list 1 2) (list 3 4)))
+(display (count-leaves1 x))
+(newline)
+(display (count-leaves x))
+
+(newline)
+(newline)
+
+(display (count-leaves (list x x)))
+(newline)
+(display (count-leaves (list x x)))
+#+end_src
+
+#+RESULTS:
+: 4
+: 4
+: 
+: 8
+: 8
+
 # local variables:
 # org-display-inline-images: t
 # org-confirm-babel-evaluate: nil
