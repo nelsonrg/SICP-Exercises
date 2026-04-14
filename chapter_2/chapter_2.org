@@ -1559,6 +1559,27 @@ Here is the implementation of ~append~.
 : 8
 : 8
 
+*** 2.36
+
+#+begin_src jupyter-racket :session 2-36 :results output
+(define (accumulate op initial sequence)
+  (if (null? sequence)
+      initial
+      (op (car sequence) (accumulate op initial (cdr sequence)))))
+
+(define (accumulate-n op init seqs)
+  (if (null? (car seqs))
+      '()
+      (cons (accumulate op init (map car seqs))
+            (accumulate-n op init (map cdr seqs)))))
+
+(define s '((1 2 3) (4 5 6) (7 8 9) (10 11 12)))
+(display (accumulate-n + 0 s))
+#+end_src
+
+#+RESULTS:
+: (22 26 30)
+
 # local variables:
 # org-display-inline-images: t
 # org-confirm-babel-evaluate: nil
