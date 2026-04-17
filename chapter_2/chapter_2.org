@@ -1580,6 +1580,65 @@ Here is the implementation of ~append~.
 #+RESULTS:
 : (22 26 30)
 
+*** 2.37
+
+#+begin_src jupyter-racket :session 2-37 :results output
+(define (accumulate op initial sequence)
+  (if (null? sequence)
+      initial
+      (op (car sequence) (accumulate op initial (cdr sequence)))))
+
+(define (dot-product v w)
+  (accumulate + 0 (map * v w)))
+
+(define x '((1 2 3) (4 5 6)))
+(define y '(1 2 3))
+
+(display (dot-product y y))
+#+end_src
+
+#+RESULTS:
+: 14
+
+#+begin_src jupyter-racket :session 2-37 :results output
+(define (matrix-*-vector m v)
+  (map (lambda (row) (dot-product row v)) m))
+
+(display (matrix-*-vector x y))
+#+end_src
+
+#+RESULTS:
+: (14 32)
+
+#+begin_src jupyter-racket :session 2-37 :results output
+(define (accumulate-n op init seqs)
+  (if (null? (car seqs))
+      '()
+      (cons (accumulate op init (map car seqs))
+            (accumulate-n op init (map cdr seqs)))))
+
+(define (transpose mat)
+  (accumulate-n cons '() mat))
+
+(display (transpose x))
+#+end_src
+
+#+RESULTS:
+: ((1 4) (2 5) (3 6))
+
+#+begin_src jupyter-racket :session 2-37 :results output
+(define (matrix-*-matrix m n)
+  (let ((cols (transpose n)))
+    (map (lambda (row) (matrix-*-vector cols row)) m)))
+
+(define z '((1 2) (3 4)))
+
+(display (matrix-*-matrix z z))
+#+end_src
+
+#+RESULTS:
+: ((7 10) (15 22))
+
 # local variables:
 # org-display-inline-images: t
 # org-confirm-babel-evaluate: nil
