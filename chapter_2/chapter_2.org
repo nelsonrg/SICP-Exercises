@@ -1799,6 +1799,151 @@ Now use it in ~prime-sum-pairs~.
 #+RESULTS:
 : ((3 2 1))
 
+** 2.42
+
+#+begin_src jupyter-racket :session 2-42 :results outpu
+(define (accumulate op initial sequence)
+  (if (null? sequence)
+      initial
+      (op (car sequence) (accumulate op initial (cdr sequence)))))
+
+(define (flatmap proc seq)
+  (accumulate append '() (map proc seq)))
+
+(define (enumerate-interval low high)
+  (if (> low high)
+      '()
+      (cons low (enumerate-interval (+ low 1) high))))
+
+(define (queens board-size)
+  (define (queen-cols k)
+    (if (= k 0)
+        (list empty-board)
+        (filter
+         (lambda (positions) (safe? k positions))
+         (flatmap
+          (lambda (rest-of-queens)
+            (map (lambda (new-row)
+                   (adjoin-position
+                    new-row k rest-of-queens))
+                 (enumerate-interval 1 board-size)))
+          (queen-cols (- k 1))))))
+  (queen-cols board-size))
+
+(define empty-board '())
+
+(define (position row col)
+  (cons row col))
+
+(define (row position)
+  (car position))
+
+(define (col position)
+  (cdr position))
+
+(define (adjoin-position row col positions)
+  (cons (position row col) positions))
+
+(define (attacks? q1 q2)
+  (or (= (row q1) (row q2))  ; same row
+      (= (abs (- (row q1) (row q2)))
+         (abs (- (col q1) (col q2))))))  ; same diagonal
+
+(define (safe? k positions)
+  (let ((k-queen (car (filter
+                       (lambda (position) (equal? k (col position)))
+                         positions)))
+        (rest-queens (filter
+                      (lambda (position) (not (equal? k (col position))))
+                        positions)))
+    (define (iter q others)
+      (cond ((null? others) #t)
+            ((attacks? q (car others)) #f)
+            (else (iter q (cdr others)))))
+  (iter k-queen rest-queens)))
+
+(display (queens 4))
+#+end_src
+
+#+RESULTS:
+: (((3 . 4) (1 . 3) (4 . 2) (2 . 1)) ((2 . 4) (4 . 3) (1 . 2) (3 . 1)))
+
+I strictly followed the textbook for the ~queens~ procedure, but I
+really don't like how they parameterized the ~safe?~ predicate. In
+order to be reusable and make sense, I need to filter the list of
+positions twice. If instead it accepts a proposed position and the
+current positions of queens, it should help performance and behave
+very similarly.
+
+#+begin_src jupyter-racket :session 2-42-improved :results output
+(define (accumulate op initial sequence)
+  (if (null? sequence)
+      initial
+      (op (car sequence) (accumulate op initial (cdr sequence)))))
+
+(define (flatmap proc seq)
+  (accumulate append '() (map proc seq)))
+
+(define (enumerate-interval low high)
+  (if (> low high)
+      '()
+      (cons low (enumerate-interval (+ low 1) high))))
+
+(define (queens board-size)
+  (define (queen-cols k)
+    (if (= k 0)
+        (list empty-board)
+        (filter
+         (lambda (positions) (safe? (newest-position positions) (previous-positions positions)))
+         (flatmap
+          (lambda (rest-of-queens)
+            (map (lambda (new-row)
+                   (adjoin-position
+                    new-row k rest-of-queens))
+                 (enumerate-interval 1 board-size)))
+          (queen-cols (- k 1))))))
+  (queen-cols board-size))
+
+(define empty-board '())
+
+(define (position row col)
+  (cons row col))
+
+(define (row position)
+  (car position))
+
+(define (col position)
+  (cdr position))
+
+(define (adjoin-position row col positions)
+  (cons (position row col) positions))
+
+(define (newest-position positions)
+  (car positions))
+
+(define (previous-positions positions)
+  (cdr positions))
+
+(define (attacks? q1 q2)
+  (or (= (row q1) (row q2))  ; same row
+      (= (abs (- (row q1) (row q2)))
+         (abs (- (col q1) (col q2))))))  ; same diagonal
+
+(define (safe? proposed positions)
+  (define (iter q others)
+    (cond ((null? others) #t)
+          ((attacks? q (car others)) #f)
+          (else (iter q (cdr others)))))
+  (iter proposed positions))
+
+(display (queens 4))
+#+end_src
+
+#+RESULTS:
+: (((3 . 4) (1 . 3) (4 . 2) (2 . 1)) ((2 . 4) (4 . 3) (1 . 2) (3 . 1)))
+
+To my eyes, this implementation is a bit cleaner and has better abstractions.
+
 # local variables:
 # org-display-inline-images: t
 # org-confirm-babel-evaluate: nil
