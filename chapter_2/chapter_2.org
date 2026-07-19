@@ -1944,6 +1944,50 @@ very similarly.
 
 To my eyes, this implementation is a bit cleaner and has better abstractions.
 
+
+** 2.43
+
+Here is the chunk of code.
+
+#+begin_quote
+(flatmap
+  (lambda (new-row)
+    (map (lambda (rest-of-queens)
+           (adjoin-position new-row k rest-of-queens))
+         (queen-cols (- k 1))))
+  (enumerate-interval 1 board-size))
+#+end_quote
+
+Notice how the recursive call ~queen-cols~ is now inside of the
+procedure in the flatmap instead of as the collection to flatmap over.
+The original implementation is iterative in that when you call
+~queen-cols n~, it only runs ~queen-cols n-i~ 1 time. There are a lot
+of board positions, but at least the recursion only happens linearly
+so ~queen-cols~ is only called ~board-size~ times.
+
+In this inefficient version, ~queen-cols~ is called redundantly many times.
+
+The total number of times ~queen-cols~ is called is
+$\sum_{k=0}^{n} n^{n-k}$ which is approximately $n^n$ complexity, but the higher $k$
+dominate the run time and those are called fewer times.
+
+In order to answer how much slower the bad solution is, we need a
+rough idea of how many possible positions there are to check at each
+iteration. An upper bound of this is $\frac{n!}{(n-k)!}$ because this
+reflects the number of ways to arrange the queens if they just can't
+be in the same row and ignoring diagonal attacks. So now we can
+investigate how much more overall work the bad solution has to do.
+
+| call           | recomputations | positions to check | total work                         | total redundant work |
+|----------------+----------------+--------------------+------------------------------------+----------------------|
+| queen-cols n   | 1              | n!                 | n!                                 | 0                    |
+| queen-cols n-1 | n              | (n-1)!             | n(n-1)! = n!                       | (n-1)(n-1)!          |
+| queen-cols n-2 | n^2            | (n-2)!             | n^2(n-2)! = n! * n/n-1             | (n^2 - 1)(n-2)!      |
+| queen-cols n-3 | n^3            | (n-3)!             | n^3(n-3)! = n! * n^2/((n-1)*(n-2)) | (n^3 - 1)(n-3)!      |
+
+So basically, the bad solution has to do about $n!(n-1)$ more work
+than the original solution. So we expect the bad solution to run in about $n!T$ time.
+
 # local variables:
 # org-display-inline-images: t
 # org-confirm-babel-evaluate: nil
