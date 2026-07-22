@@ -88,3 +88,11 @@
   (cadr frame))
 (define (edge2-frame2 frame)
   (cddr frame))
+
+;; Exercise 2.48
+(define (make-segment a b)
+  (cons a b))
+(define (start-segment segment)
+  (car segment))
+(define (end-segment segment)
+  (cdr segment))
