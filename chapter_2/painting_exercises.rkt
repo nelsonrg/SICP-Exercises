@@ -96,3 +96,50 @@
   (car segment))
 (define (end-segment segment)
   (cdr segment))
+
+;; Exercise 2.49
+;; this procedure is from the book
+(define (segments->painter segment-list)
+  (lambda (frame)
+    (for-each
+     (lambda (segment)
+       (graphics-draw-line
+        ((frame-coord-map frame)
+         (start-segment segment))
+        ((frame-coord-map frame)
+         (end-segment segment))))
+     segment-list)))
+
+(define (frame-coord-map frame)
+  (lambda (v)
+    (add-vect
+      (origin-frame frame)
+      (add-vect
+        (scale-vect (xcor-vect v)
+                    (edge1-frame frame))
+        (scale-vect (ycor-vect v)
+                    (edge2-frame frame))))))
+
+(define raw-draw-line (draw-line vp))
+
+(define (graphics-draw-line start end)
+  (raw-draw-line
+   (make-posn (xcor-vect start) (ycor-vect start))
+   (make-posn (xcor-vect end) (ycor-vect end))))
+
+;; a)
+(define outline
+  (segments->painter
+   (list
+    (make-segment (make-vect 0 0) (make-vect 0 1))
+    (make-segment (make-vect 0 1) (make-vect 1 1))
+    (make-segment (make-vect 1 1) (make-vect 1 0))
+    (make-segment (make-vect 1 0) (make-vect 0 0)))))
+
+(define square-frame
+  (make-frame
+    (make-vect 50 50)
+    (make-vect 400 0)
+    (make-vect 0 400)))
+
+(outline square-frame)
