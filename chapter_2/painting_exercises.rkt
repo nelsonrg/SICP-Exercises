@@ -40,3 +40,51 @@
 (display "up-split")(newline)
 (paint (up-split einstein 1))
 
+;; Exercise 2.46
+(define (make-vect x y)
+  (cons x y))
+
+(define (xcor-vect v)
+  (car v))
+
+(define (ycor-vect v)
+  (cdr v))
+
+(define (add-vect a b)
+  (make-vect (+ (xcor-vect a) (xcor-vect b))
+             (+ (ycor-vect a) (ycor-vect b))))
+
+(define (sub-vect a b)
+  (make-vect (- (xcor-vect a) (xcor-vect b))
+             (- (ycor-vect a) (ycor-vect b))))
+
+(define (scale-vect s v)
+  (make-vect (* s (xcor-vect v))
+             (* s (ycor-vect v))))
+
+(display "2.46")(newline)
+(define x (make-vect 1 2))(display "x: ")(display x)(newline)
+(define y (make-vect 1 1))(display "y: ")(display y)(newline)
+(display "add-vect x y: ")(display (add-vect x y))(newline)
+(display "sub-vect x y: ")(display (sub-vect x y))(newline)
+(display "scale-vect 10 x: ")(display (scale-vect 10 x))(newline)
+
+;; Exercise 2.47
+(define (make-frame origin edge1 edge2)
+  (list origin edge1 edge2))
+(define (make-frame2 origin edge1 edge2)
+  (cons origin (cons edge1 edge2)))
+
+(define (origin-frame frame)
+  (car frame))
+(define (edge1-frame frame)
+  (cadr frame))
+(define (edge2-frame frame)
+  (caddr frame))
+
+(define (origin-frame2 frame)
+  (car frame))
+(define (edge1-frame2 frame)
+  (cadr frame))
+(define (edge2-frame2 frame)
+  (cddr frame))
