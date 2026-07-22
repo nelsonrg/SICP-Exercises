@@ -1988,6 +1988,11 @@ investigate how much more overall work the bad solution has to do.
 So basically, the bad solution has to do about $n!(n-1)$ more work
 than the original solution. So we expect the bad solution to run in about $n!T$ time.
 
+** 2.44
+
+For the exercises involving the painting package, it makes sense to
+move to a dedicate racket file for those procedures.
+
 # local variables:
 # org-display-inline-images: t
 # org-confirm-babel-evaluate: nil
