@@ -1993,7 +1993,7 @@ than the original solution. So we expect the bad solution to run in about $n!T$ 
 For the exercises involving the painting package, it makes sense to
 move to a dedicate racket file for those procedures.
 
-** 2.54
+** 2.53
 
 #+begin_src jupyter-racket :eval no
 (list 'a 'b 'c)  ; (a b c)
