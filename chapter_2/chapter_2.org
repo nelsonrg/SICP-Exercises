@@ -1993,6 +1993,18 @@ than the original solution. So we expect the bad solution to run in about $n!T$ 
 For the exercises involving the painting package, it makes sense to
 move to a dedicate racket file for those procedures.
 
+** 2.54
+
+#+begin_src jupyter-racket :eval no
+(list 'a 'b 'c)  ; (a b c)
+(list (list 'george))  ; ((george))
+(cdr '((x1 x2) (y1 y2)))  ; ((y1 y2))
+(cadr '((x1 x2) (y1 y2)))  ; (y1 y2)
+(pair? (car '(a short list)))  ; #f
+(memq 'red '((red shoes) (blue socks)))  ; #f
+(memq 'red '(red shoes blue socks))  ; (red shoes blue socks)
+#+end_src
+
 # local variables:
 # org-display-inline-images: t
 # org-confirm-babel-evaluate: nil
