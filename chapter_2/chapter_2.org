@@ -2005,6 +2005,26 @@ move to a dedicate racket file for those procedures.
 (memq 'red '(red shoes blue socks))  ; (red shoes blue socks)
 #+end_src
 
+** 2.54
+
+#+begin_src jupyter-racket :session 2-54 :results output
+(define (equal? a b)
+  (cond ((and (null? a) (null? b)) #t)
+        ((and (symbol? a) (symbol? b)) (eq? a b))
+        ((and (pair? a) (pair? b))
+         (and (equal? (car a) (car b))
+              (equal? (cdr a) (cdr b))))
+        (else #f)))
+
+(display (equal? '(this is a list) '(this is a list)))
+(newline)
+(display (equal? '(this is a list) '(this (is a) list)))
+#+end_src
+
+#+RESULTS:
+: #t
+: #f
+
 # local variables:
 # org-display-inline-images: t
 # org-confirm-babel-evaluate: nil
