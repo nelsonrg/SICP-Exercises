@@ -2025,6 +2025,12 @@ move to a dedicate racket file for those procedures.
 : #t
 : #f
 
+** 2.55
+
+The entire phrase ~'abracadabra~ is quoted, so getting the ~car~ of
+that is the first character ~'~.
+
+
 # local variables:
 # org-display-inline-images: t
 # org-confirm-babel-evaluate: nil
