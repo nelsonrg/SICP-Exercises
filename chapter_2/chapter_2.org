@@ -2310,6 +2310,26 @@ the extra check in ~product~ that the expression is not a sum.
 : 4
 : 4
 
+** 2.59
+
+#+begin_src jupyter-racket :session 2-59 :results output
+(define (union-set a b)
+  (cond ((null? a) b)
+        ((element-of-set? (car a) b)
+         (union-set (cdr a) b))
+        (else (cons (car a) (union-set (cdr a) b)))))
+
+(define (element-of-set? x set)
+  (cond ((null? set) #f)
+        ((equal? x (car set)) #t)
+        (else (element-of-set? x (cdr set)))))
+
+(display (union-set '(0 1 x) '(0 1 2 y)))
+#+end_src
+
+#+RESULTS:
+: (x 0 1 2 y)
+
 # local variables:
 # org-display-inline-images: t
 # org-confirm-babel-evaluate: nil
