@@ -2330,6 +2330,72 @@ the extra check in ~product~ that the expression is not a sum.
 #+RESULTS:
 : (x 0 1 2 y)
 
+** 2.60
+
+~element-of-set?~ does not need to change its implementation. This has
+the same time complexity as the previous implementation for items that
+are in the set. For items that are not in the set, the time complexity
+increases because the overall set is larger.
+
+#+begin_src jupyter-racket :session 2-60 :results output
+(define (element-of-set? x set)
+  (cond ((null? set) #f)
+        ((equal? x (car set)) #t)
+        (else (element-of-set? x (cdr set)))))
+
+(display (map (lambda (x)
+                (element-of-set? x '(2 3 2 1 3 2 2)))
+              '(1 2 3)))
+#+end_src
+
+#+RESULTS:
+: (#t #t #t)
+
+For adjoin set, we just add to the set, which is $\mathcal{O}(1)$.
+
+#+begin_src jupyter-racket :session 2-60 :results output
+(define (adjoin-set x set)
+  (cons x set))
+
+(display (adjoin-set 1 '(2 3 2 1 3 2 2)))
+#+end_src
+
+#+RESULTS:
+: (1 2 3 2 1 3 2 2)
+
+For union set, we just append both sets without removing the overlap.
+
+#+begin_src jupyter-racket :session 2-60 :results output
+(define (union-set a b)
+  (append a b))
+
+(display (union-set '(1 2 3) '(4 5 6)))
+#+end_src
+
+#+RESULTS:
+: (1 2 3 4 5 6)
+
+For intersection set, our logic is the same as before, but there will be a lot more elements to check.
+
+#+begin_src jupyter-racket :session 2-60 :results output
+(define (intersection-set a b)
+  (cond ((or (null? a) (null? b)) '())
+        ((element-of-set? (car a) b)
+         (cons (car a) (intersection-set (cdr a) b)))
+        (else (intersection-set (cdr a) b))))
+
+(display (intersection-set '(1 2 3 2 1) '(0 0 2 5 6 7 1 1)))
+#+end_src
+
+#+RESULTS:
+: (1 2 2 1)
+
+This implementation is more efficient on writing to the set, but more
+expensive when reading from the set for operations like
+~element-of-set?~ and ~intersection-set~. If we have an application
+where there are a lot of small additions to the set and we only read
+from it occasionally, this representation makes sense to use.
+
 # local variables:
 # org-display-inline-images: t
 # org-confirm-babel-evaluate: nil
