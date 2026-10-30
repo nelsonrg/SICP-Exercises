@@ -2396,6 +2396,28 @@ expensive when reading from the set for operations like
 where there are a lot of small additions to the set and we only read
 from it occasionally, this representation makes sense to use.
 
+** 2.61
+
+#+begin_src jupyter-racket :session 2-61 :results output
+(define (adjoin-set x set)
+  (cond ((null? set) (list x))
+        ((= x (car set)) set)
+        ((< x (car set)) (cons x set))
+        (else (cons (car set)
+                    (adjoin-set x (cdr set))))))
+
+(display (adjoin-set 1 '()))
+(newline)
+(display (adjoin-set 3 '(1 2 4 5)))
+(newline)
+(display (adjoin-set 3 '(1 2 3 4 5)))
+#+end_src
+
+#+RESULTS:
+: (1)
+: (1 2 3 4 5)
+: (1 2 3 4 5)
+
 # local variables:
 # org-display-inline-images: t
 # org-confirm-babel-evaluate: nil
